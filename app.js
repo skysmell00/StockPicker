@@ -1,8 +1,22 @@
-/* Stock Picker 배포 사이트 동작 */
+/* Stock Picker 배포 사이트 동작 (회원제)
+   - 회원 가입(Supabase Auth: 실명·이메일·비밀번호·휴대폰·약관 동의 필수) → 운영자 승인(Stock Picker Controller)
+   - 승인된 회원만 로그인해 설치 파일 다운로드(비공개 저장소의 60초 임시 링크)
+   - 인증키 신청은 프로그램 로그인 창에서, 인증키는 가입 이메일로 발송 */
 (function () {
   const C = window.SP_CONFIG || {};
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const NAME = /^[가-힣A-Za-z][가-힣A-Za-z ]{0,38}[가-힣A-Za-z]$/;
+  const PHONE = /^01[0-9]{8,9}$/;
+  // 비밀번호: 8~12자, 영문 대문자 + 소문자 + 숫자 + 특수기호
+  const PW_RULES = {
+    len: (p) => p.length >= 8 && p.length <= 12, upper: (p) => /[A-Z]/.test(p), lower: (p) => /[a-z]/.test(p),
+    digit: (p) => /[0-9]/.test(p), special: (p) => /[^A-Za-z0-9]/.test(p) && !/\s/.test(p)
+  };
+  const PW_LABEL = { len: "8~12자", upper: "영문 대문자", lower: "영문 소문자", digit: "숫자", special: "특수기호" };
+  const show = (id, text, ok) => { const m = $(id); if (m) { m.textContent = text || ""; m.className = "msg " + (ok ? "ok" : "err"); } };
+  const hide = (el, yes) => { if (el) el.hidden = !!yes; };
 
   // ---- 버전 정보 ----
   if ($("hero-badge")) $("hero-badge").textContent = `Windows 프로그램 · v${C.version || "-"}`;
@@ -13,80 +27,218 @@
     $("dl-req").textContent = C.requirements || "-";
   }
 
-  // ---- 다운로드: 약관 동의 후에만 ----
+  // ---- 서버(Supabase) 연결 ----
+  const sb = (window.supabase && C.supabaseUrl && C.supabaseKey)
+    ? window.supabase.createClient(C.supabaseUrl.replace(/\/+$/, ""), C.supabaseKey,
+                                   { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } })
+    : null;
+
+  // Supabase 영어 오류 → 한국어
+  function korean(err) {
+    const t = String((err && (err.message || err.error_description)) || err || "");
+    if (/invalid login credentials/i.test(t)) return "이메일 또는 비밀번호가 맞지 않습니다.";
+    if (/already registered|already exists/i.test(t)) return "이미 가입된 이메일입니다. 로그인하세요. (비밀번호를 잊었다면 '비밀번호를 잊으셨나요?')";
+    if (/email not confirmed/i.test(t)) return "이메일 확인이 필요합니다. 받은 메일의 확인 링크를 누른 뒤 로그인하세요.";
+    if (/password/i.test(t) && /(at least|short|weak|contain|character)/i.test(t)) return "가입이 거절되었습니다. 비밀번호는 8~12자, 영문 대문자·소문자·숫자·특수기호를 모두 넣어야 합니다.";
+    if (/rate limit|too many/i.test(t)) return "요청이 너무 많습니다. 잠시 후 다시 시도하세요.";
+    if (/필수 항목 누락/.test(t)) return "가입이 거절되었습니다. " + t.replace(/^.*?(필수 항목 누락)/, "$1");
+    if (/database error saving new user/i.test(t)) return "가입이 거절되었습니다. 실명·휴대폰 번호·약관 동의 등 필수 항목을 확인하세요.";
+    if (/same.*password|different from the old/i.test(t)) return "이전과 다른 비밀번호를 입력하세요.";
+    if (/failed to fetch|network/i.test(t)) return "서버에 연결하지 못했습니다. 인터넷 연결을 확인하세요.";
+    if (/object not found|not found/i.test(t)) return "설치 파일을 찾을 수 없습니다. 개발자에게 문의해 주세요.";
+    return t || "처리하지 못했습니다. 잠시 후 다시 시도하세요.";
+  }
+
+  const APPROVAL = { pending: ["승인 대기", "wait"], approved: ["승인 완료", "ok"], rejected: ["승인 거절", "bad"] };
+  const ROLE = { general: "일반 회원", premium: "프리미엄 회원", monitor: "모니터 회원" };
+  let me = null;           // my_member() 결과
+  let recovering = false;  // 비밀번호 재설정 링크로 들어옴
+
+  function setView(view) {
+    hide($("acct-loading"), view !== "loading");
+    hide($("acct-out"), view !== "out");
+    hide($("acct-in"), view !== "in");
+    hide($("reset-form"), view !== "reset");
+    const nav = $("nav-account");
+    if (nav) nav.textContent = view === "in" && me ? `👤 ${me.name}님` : "로그인 · 회원 가입";
+    if ($("acct-title")) $("acct-title").textContent = view === "in" ? "내 정보 · 인증키" : "회원 가입 · 로그인";
+  }
+
+  function renderDownload() {
+    const locked = $("dl-locked"), open = $("dl-open");
+    if (!locked) return;
+    let title = "🔒 회원 전용", text = "로그인한 승인 회원만 내려받을 수 있습니다.", btn = "로그인 · 회원 가입", canDl = false;
+    if (me) {
+      if (me.status === "suspended") { title = "⛔ 이용 정지"; text = "이용이 제한된 회원입니다. 개발자에게 문의하세요."; btn = "내 정보 보기"; }
+      else if (me.approval === "pending") { title = "⏳ 승인 대기 중"; text = "운영자가 가입을 승인하면 내려받을 수 있습니다."; btn = "내 정보 보기"; }
+      else if (me.approval === "rejected") { title = "가입 승인 거절"; text = "가입이 승인되지 않았습니다. 개발자에게 문의하세요."; btn = "내 정보 보기"; }
+      else canDl = !!me.can_download;
+    }
+    hide(locked, canDl); hide(open, !canDl);
+    $("dl-lock-title").textContent = title; $("dl-lock-text").textContent = text; $("dl-lock-btn").textContent = btn;
+  }
+
+  function renderMe() {
+    if (!me) return;
+    $("me-name").textContent = me.name || "-";
+    $("me-email").textContent = me.email || "-";
+    const ap = me.status === "suspended" ? ["이용 정지", "bad"] : me.status === "withdrawn" ? ["탈퇴", "bad"]
+             : (APPROVAL[me.approval] || [me.approval, ""]);
+    const pill = $("me-approval"); pill.textContent = ap[0]; pill.className = "pill " + ap[1];
+    const approved = me.approval === "approved" && me.status === "active";
+    $("me-role").textContent = approved ? (ROLE[me.role] || "-") : "-";
+    $("me-period").textContent = !approved ? "-" : me.role === "monitor" ? "기간 제한 없음"
+                               : me.subscription_end ? `${me.subscription_end} 까지` : "-";
+    $("me-note").textContent = me.approval === "pending" ? "가입 신청이 접수되었습니다. 운영자가 확인 후 승인하면 설치 파일 다운로드와 인증키 요청서 제출이 가능합니다."
+      : me.approval === "rejected" ? "가입이 승인되지 않았습니다. 궁금한 점은 " + (C.contact || "개발자") + " 로 문의하세요." : "";
+
+    // 인증키 안내 상태
+    const gs = $("guide-state");
+    let g = "";
+    if (!approved) g = "회원 가입이 승인되면 설치 파일을 받고 인증키를 신청할 수 있습니다.";
+    else if (me.request_status === "pending") g = "⏳ 인증키 신청을 확인하고 있습니다. 부여되면 가입 이메일로 보내 드립니다.";
+    else if (me.has_key && me.role !== "general") g = "✔ 인증키가 발급되어 있습니다. 가입 이메일로 받은 인증키로 로그인하세요.";
+    else if (me.has_key) g = "사용 기간이 끝났습니다. 프로그램 로그인 창의 [인증키 신청]으로 연장을 신청하세요.";
+    gs.textContent = g; hide(gs, !g);
+  }
+
+  async function loadMe() {
+    if (!sb) { setView("out"); show("login-msg", "로그인 서버가 아직 준비되지 않았습니다.", false); return; }
+    const { data: { session } } = await sb.auth.getSession();
+    if (recovering) { setView("reset"); return; }
+    if (!session) { me = null; setView("out"); renderDownload(); return; }
+    const { data, error } = await sb.rpc("my_member");
+    if (error || !data || !data.ok) {
+      me = null; setView("out"); renderDownload();
+      show("login-msg", error ? korean(error) : (data && data.message) || "회원 정보를 불러오지 못했습니다.", false);
+      return;
+    }
+    me = data; setView("in"); renderMe(); renderDownload();
+  }
+
+  // ---- 로그인 ----
+  const loginForm = $("login-form");
+  if (loginForm) loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const email = $("login-email").value.trim(), pw = $("login-pw").value;
+    if (!EMAIL.test(email)) return show("login-msg", "이메일 주소를 확인하세요.", false);
+    if (!pw) return show("login-msg", "비밀번호를 입력하세요.", false);
+    if (!sb) return show("login-msg", "로그인 서버가 아직 준비되지 않았습니다.", false);
+    $("login-btn").disabled = true; show("login-msg", "로그인하는 중...", true);
+    const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+    $("login-btn").disabled = false;
+    if (error) return show("login-msg", korean(error), false);
+    show("login-msg", "", true); loginForm.reset();
+    await loadMe();
+  });
+
+  // ---- 비밀번호 찾기 ----
+  const forgot = $("forgot-link");
+  if (forgot) forgot.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const email = $("login-email").value.trim();
+    if (!EMAIL.test(email)) return show("login-msg", "위 이메일 칸에 가입한 이메일을 입력한 뒤 다시 누르세요.", false);
+    if (!sb) return;
+    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin + location.pathname });
+    if (error) return show("login-msg", korean(error), false);
+    show("login-msg", "비밀번호 재설정 메일을 보냈습니다. 메일의 링크를 누르면 이 사이트에서 새 비밀번호를 정할 수 있습니다.", true);
+  });
+
+  // ---- 회원 가입 신청 ----
+  const joinForm = $("join-form");
+  if (joinForm) joinForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const name = $("join-name").value.trim(), email = $("join-email").value.trim();
+    const pw = $("join-pw").value, pw2 = $("join-pw2").value;
+    const phone = $("join-phone").value.replace(/[^0-9]/g, "");
+    const missing = [];
+    if (!NAME.test(name)) missing.push("실명(한글 또는 영문 2자 이상)");
+    if (!EMAIL.test(email)) missing.push("이메일");
+    const bad = Object.keys(PW_RULES).filter((r) => !PW_RULES[r](pw));
+    if (bad.length) missing.push("비밀번호 규칙(" + bad.map((r) => PW_LABEL[r]).join(", ") + ")");
+    else if (pw !== pw2) missing.push("비밀번호 확인 일치");
+    if (!PHONE.test(phone)) missing.push("휴대폰 번호");
+    if (!$("join-agree-terms").checked) missing.push("회원 이용약관 동의");
+    if (!$("join-agree-privacy").checked) missing.push("개인정보 수집·이용 동의");
+    if (missing.length) return show("join-msg", "가입이 거절되었습니다. 다음 필수 항목을 확인하세요: " + missing.join(" · "), false);
+    if (!sb) return show("join-msg", "가입 서버가 아직 준비되지 않았습니다.", false);
+    $("join-btn").disabled = true; show("join-msg", "가입 신청하는 중...", true);
+    const { data, error } = await sb.auth.signUp({
+      email, password: pw,
+      options: { data: { name, phone, terms_version: C.memberTermsVersion || "1.0" },
+                 emailRedirectTo: location.origin + location.pathname }
+    });
+    $("join-btn").disabled = false;
+    if (error) return show("join-msg", korean(error), false);
+    if (data && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0)
+      return show("join-msg", "이미 가입된 이메일입니다. 로그인하세요.", false);
+    joinForm.reset();
+    if (data && data.session) {
+      await loadMe();
+      show("me-msg", "회원 가입 신청이 접수되었습니다. 운영자 승인을 기다려 주세요.", true);
+    } else {
+      show("join-msg", "가입 신청이 접수되었습니다. 받은 메일의 확인 링크를 누른 뒤 로그인하세요. 운영자 승인 후 이용할 수 있습니다.", true);
+    }
+  });
+
+  // ---- 로그아웃 ----
+  const logout = $("logout-btn");
+  if (logout) logout.addEventListener("click", async () => {
+    if (sb) await sb.auth.signOut();
+    me = null; setView("out"); renderDownload();
+  });
+
+  // ---- 비밀번호 규칙 표시 ----
+  const pwIn = $("join-pw"), rules = $("pw-rules");
+  if (pwIn && rules) pwIn.addEventListener("input", () => {
+    rules.querySelectorAll("li").forEach((li) => li.classList.toggle("ok", PW_RULES[li.dataset.r](pwIn.value)));
+  });
+
+  // ---- 비밀번호 재설정 ----
+  const resetForm = $("reset-form");
+  if (resetForm) resetForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const pw = $("reset-pw").value, pw2 = $("reset-pw2").value;
+    const bad = Object.keys(PW_RULES).filter((r) => !PW_RULES[r](pw));
+    if (bad.length) return show("reset-msg", "비밀번호 규칙을 확인하세요: " + bad.map((r) => PW_LABEL[r]).join(", "), false);
+    if (pw !== pw2) return show("reset-msg", "비밀번호 확인이 일치하지 않습니다.", false);
+    $("reset-btn").disabled = true;
+    const { error } = await sb.auth.updateUser({ password: pw });
+    $("reset-btn").disabled = false;
+    if (error) return show("reset-msg", korean(error), false);
+    recovering = false; resetForm.reset();
+    history.replaceState(null, "", location.pathname + "#account");
+    await loadMe();
+    show("me-msg", "비밀번호를 바꿨습니다.", true);
+  });
+
+  // ---- 다운로드: 승인 회원 + 약관 동의 → 60초 임시 링크 ----
   const agree = $("dl-agree"), dlBtn = $("dl-btn");
   if (agree && dlBtn) {
-    agree.addEventListener("change", () => { dlBtn.disabled = !agree.checked; $("dl-msg").textContent = ""; });
-    dlBtn.addEventListener("click", () => {
-      if (!agree.checked) return;
-      if (!C.downloadUrl) {
-        $("dl-msg").textContent = "다운로드 링크가 아직 준비되지 않았습니다. 잠시 후 다시 시도해 주세요.";
-        return;
-      }
-      window.location.href = C.downloadUrl;
-    });
-    if (C.portableUrl) {
-      $("dl-portable").innerHTML = `설치 없이 쓰려면 <a href="${esc(C.portableUrl)}" id="pt-link">압축 파일(portable)</a>을 받으세요. 약관 동의가 필요합니다.`;
-      $("pt-link").addEventListener("click", (e) => { if (!agree.checked) { e.preventDefault(); $("dl-msg").textContent = "이용약관에 먼저 동의해 주세요."; } });
-    }
-  }
-
-  // ---- 서버 호출(공개 publishable 키로 정해진 함수만 호출 가능) ----
-  async function rpc(fn, args) {
-    const r = await fetch(C.supabaseUrl.replace(/\/+$/, "") + "/rest/v1/rpc/" + fn, {
-      method: "POST",
-      headers: { "apikey": C.supabaseKey, "Content-Type": "application/json" },
-      body: JSON.stringify(args)
-    });
-    const data = await r.json().catch(() => ({}));
-    return { ok: r.ok && data.ok, message: data.message };
-  }
-  const EMAIL = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-  function bindForm(id, prefix, validate, call, okText) {
-    const form = $(id);
-    if (!form) return;
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const msg = $(prefix + "-msg"), btn = $(prefix + "-btn");
-      const show = (text, ok) => { msg.textContent = text; msg.className = "msg " + (ok ? "ok" : "err"); };
-      const bad = validate();
-      if (bad) return show(bad, false);
-      if (!C.supabaseUrl || !C.supabaseKey) return show("신청 접수가 아직 준비되지 않았습니다.", false);
-      btn.disabled = true; show("접수하는 중...", true);
-      try {
-        const res = await call();
-        if (res.ok) { show(res.message || okText, true); form.reset(); }
-        else show(res.message || "접수하지 못했습니다. 잠시 후 다시 시도하거나 이메일로 문의해 주세요.", false);
-      } catch (err) {
-        show("서버에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.", false);
-      } finally { btn.disabled = false; }
+    agree.addEventListener("change", () => { dlBtn.disabled = !agree.checked; show("dl-msg", "", false); });
+    dlBtn.addEventListener("click", async () => {
+      if (!agree.checked || !sb) return;
+      dlBtn.disabled = true; show("dl-msg", "다운로드 링크를 만드는 중...", true);
+      const { data, error } = await sb.storage.from(C.storageBucket || "releases")
+        .createSignedUrl(C.downloadFile, 60, { download: true });
+      dlBtn.disabled = false;
+      if (error || !data || !data.signedUrl) return show("dl-msg", error ? korean(error) : "다운로드 링크를 만들지 못했습니다.", false);
+      show("dl-msg", "다운로드를 시작합니다.", true);
+      window.location.href = data.signedUrl;
     });
   }
 
-  // ---- ① 회원 가입 신청 ----
-  bindForm("join-form", "join", () => {
-    const phone = $("join-phone").value.replace(/[^0-9]/g, "");
-    if (!$("join-name").value.trim()) return "이름을 입력하세요.";
-    if (!EMAIL.test($("join-email").value.trim())) return "이메일 주소를 확인하세요.";
-    if (phone && !/^01[0-9]{8,9}$/.test(phone)) return "휴대폰 번호를 확인하세요. (선택 항목이라 비워도 됩니다)";
-    if (!$("join-agree-terms").checked) return "사이트 회원 이용약관에 동의해야 가입할 수 있습니다.";
-    if (!$("join-agree-privacy").checked) return "개인정보 수집·이용에 동의해야 가입할 수 있습니다.";
-    return "";
-  }, () => rpc("member_signup", {
-    p_name: $("join-name").value.trim(), p_email: $("join-email").value.trim(),
-    p_phone: $("join-phone").value.trim(), p_terms_version: C.memberTermsVersion || "1.0"
-  }), "회원 가입 신청이 접수되었습니다.");
-
-  // ---- ② 인증키 사용 신청 ----
-  bindForm("req-form", "req", () => {
-    if (!EMAIL.test($("req-email").value.trim())) return "가입한 이메일 주소를 입력하세요.";
-    if (!$("req-agree").checked) return "인증키 이용약관에 동의해야 신청할 수 있습니다.";
-    return "";
-  }, () => rpc("submit_key_request", {
-    p_email: $("req-email").value.trim(), p_terms_version: C.termsVersion || "1.0",
-    p_memo: $("req-memo").value.trim()
-  }), "인증키 사용 신청이 접수되었습니다.");
+  // ---- 시작 ----
+  if (document.getElementById("account")) {
+    setView("loading");
+    if (/type=recovery/.test(location.hash)) recovering = true;
+    if (sb) sb.auth.onAuthStateChange((event) => {
+      if (event === "PASSWORD_RECOVERY") { recovering = true; setView("reset"); }
+      else if (event === "SIGNED_OUT") { me = null; setView("out"); renderDownload(); }
+    });
+    loadMe().catch((err) => { setView("out"); show("login-msg", korean(err), false); });
+    renderDownload();
+  }
 
   // ---- 공지 ----
   const list = $("notice-list");

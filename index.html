@@ -17,11 +17,11 @@
       <a href="#features">기능</a>
       <a href="#how">사용 방법</a>
       <a href="#download">다운로드</a>
-      <a href="#request">회원 가입</a>
+      <a href="#account">회원</a>
       <a href="#notices">공지</a>
       <a href="terms.html">약관</a>
     </nav>
-    <a class="cta" href="#download">다운로드</a>
+    <a class="cta" href="#account" id="nav-account">로그인 · 회원 가입</a>
   </div>
 </header>
 
@@ -34,9 +34,9 @@
         <p class="lead">추세·수급·모멘텀·거래량·공시까지 단기 투자 factor로 점수를 매겨, 관심 종목 TOP 5와 추천 근거·주의할 점을 한 화면에 보여 줍니다.</p>
         <div class="btns">
           <a class="btn btn-primary" href="#download">설치 파일 받기</a>
-          <a class="btn btn-ghost" href="#request">회원 가입 · 인증키 신청</a>
+          <a class="btn btn-ghost" href="#account">회원 가입 · 로그인</a>
         </div>
-        <p class="meta">인증키가 있어야 사용할 수 있습니다 · 투자 권유가 아닌 참고용 프로그램입니다</p>
+        <p class="meta">회원제로 운영합니다 · 가입 승인된 회원만 내려받을 수 있습니다 · 투자 권유가 아닌 참고용 프로그램입니다</p>
       </div>
 
       <div>
@@ -102,9 +102,9 @@
       <h2>세 단계면 시작할 수 있습니다</h2>
       <p class="sec-lead">인증키 1개는 동시에 1대의 PC에서 사용할 수 있습니다. 인증키는 현재 운영자 확인 후 무료로 부여됩니다.</p>
       <div class="steps">
-        <div class="step"><h3>회원 가입 · 인증키 신청</h3><p>회원 가입을 신청하면 운영자가 확인 후 승인합니다. 승인되면 인증키 사용을 신청하고, 인증키를 이메일로 받습니다.</p></div>
-        <div class="step"><h3>설치하고 인증</h3><p>설치 파일을 실행하고, 처음 실행 화면에 인증키를 입력한 뒤 이용약관에 동의합니다.</p></div>
-        <div class="step"><h3>업종·테마 선택</h3><p>관심 있는 업종이나 테마를 고르고 [추천 종목 분석]을 누르면 10~30초 안에 결과가 나옵니다.</p></div>
+        <div class="step"><h3>회원 가입 · 승인</h3><p>사이트에서 회원 가입을 신청하면 운영자가 확인 후 승인하고, 가입한 이메일로 안내를 보내 드립니다.</p></div>
+        <div class="step"><h3>설치 · 인증키 신청</h3><p>사이트에 로그인해 설치 파일을 받아 설치합니다. 프로그램 로그인 창 아래 [인증키 신청]에서 약관에 동의하고 신청하면, 인증키를 가입 이메일로 보내 드립니다.</p></div>
+        <div class="step"><h3>로그인 · 분석</h3><p>관심 있는 업종이나 테마를 고르고 [추천 종목 분석]을 누르면 10~30초 안에 결과가 나옵니다.</p></div>
       </div>
     </div>
   </section>
@@ -114,7 +114,7 @@
       <div>
         <div class="kicker">다운로드</div>
         <h2>설치 파일 받기</h2>
-        <p class="sec-lead" style="margin-bottom:24px">설치 파일만으로는 실행되지 않으며, 발급받은 인증키가 필요합니다.</p>
+        <p class="sec-lead" style="margin-bottom:24px"><b>가입 승인된 회원</b>만 로그인한 상태에서 내려받을 수 있습니다. 설치 파일만으로는 실행되지 않으며, 부여받은 인증키가 필요합니다.</p>
         <div class="warn">처음 실행할 때 Windows가 "PC 보호" 경고를 띄우면 <b>[추가 정보] → [실행]</b>을 누르세요. 개인 개발 프로그램이라 코드 서명이 없어 나오는 안내입니다.</div>
       </div>
       <div class="card dl">
@@ -124,36 +124,68 @@
           <dt>파일 크기</dt><dd id="dl-size">-</dd>
           <dt>사용 환경</dt><dd id="dl-req">-</dd>
         </dl>
-        <label class="agree"><input type="checkbox" id="dl-agree">
-          <span><a href="terms.html" target="_blank">이용약관 및 개인정보 처리 안내</a>를 읽었으며 동의합니다. 프로그램과 설치 파일을 다른 사람에게 배포·공유하지 않겠습니다.</span></label>
-        <button class="btn btn-primary" id="dl-btn" disabled style="width:100%;justify-content:center">설치 파일 다운로드</button>
-        <p class="hint" id="dl-portable"></p>
+        <div id="dl-locked" class="locked">
+          <b id="dl-lock-title">🔒 회원 전용</b>
+          <p id="dl-lock-text">로그인한 승인 회원만 내려받을 수 있습니다.</p>
+          <a class="btn btn-primary" href="#account" id="dl-lock-btn" style="width:100%;justify-content:center">로그인 · 회원 가입</a>
+        </div>
+        <div id="dl-open" hidden>
+          <label class="agree"><input type="checkbox" id="dl-agree">
+            <span><a href="terms.html" target="_blank">인증키 이용약관 및 개인정보 처리 안내</a>를 읽었으며 동의합니다. 프로그램과 설치 파일을 다른 사람에게 배포·공유하지 않겠습니다.</span></label>
+          <button class="btn btn-primary" id="dl-btn" disabled style="width:100%;justify-content:center">설치 파일 다운로드</button>
+        </div>
         <p class="msg err" id="dl-msg"></p>
       </div>
     </div>
   </section>
 
-  <section id="request" class="alt">
+  <section id="account" class="alt">
     <div class="wrap">
       <div class="kicker">회원</div>
-      <h2>회원 가입 · 인증키 사용 신청</h2>
-      <p class="sec-lead">① 회원 가입을 신청하면 운영자가 확인 후 승인하고 이메일로 알려 드립니다. ② 승인된 회원은 인증키 이용약관에 동의하고 인증키 사용을 신청할 수 있습니다.</p>
+      <h2 id="acct-title">회원 가입 · 로그인</h2>
+      <p class="sec-lead">Stock Picker는 회원제로 운영합니다. 회원 가입을 신청하면 운영자가 확인 후 승인하고, 가입한 이메일로 알려 드립니다. 승인된 회원만 설치 파일을 내려받을 수 있습니다.</p>
       <div class="flow">
-        <span class="on">① 회원 가입 신청</span><i>→</i><span>운영자 승인</span><i>→</i><span class="on">② 인증키 사용 신청</span><i>→</i><span>인증키 이메일 발송</span>
+        <span class="on">① 사이트 회원 가입 신청</span><i>→</i><span>운영자 승인 (이메일 안내)</span><i>→</i><span class="on">② 로그인 · 설치 파일 다운로드</span><i>→</i><span class="on">③ 프로그램 로그인 창에서 인증키 신청</span><i>→</i><span>인증키 이메일 발송</span>
       </div>
-      <div class="grid2">
+
+      <div class="card" id="acct-loading"><p class="hint" style="margin:0">회원 정보를 불러오는 중...</p></div>
+
+      <!-- 로그아웃 상태: 로그인 / 회원 가입 -->
+      <div class="grid2" id="acct-out" hidden>
+        <form class="card" id="login-form" novalidate>
+          <h3 class="form-title"><b>→</b> 로그인</h3>
+          <label class="f" for="login-email">이메일</label>
+          <input class="t" id="login-email" type="email" maxlength="100" autocomplete="username" required>
+          <label class="f" for="login-pw">비밀번호</label>
+          <input class="t" id="login-pw" type="password" maxlength="72" autocomplete="current-password" required>
+          <button class="btn btn-primary" type="submit" id="login-btn" style="width:100%;justify-content:center">로그인</button>
+          <p class="hint"><a href="#" id="forgot-link">비밀번호를 잊으셨나요?</a> — 이메일로 재설정 링크를 보내 드립니다.</p>
+          <p class="msg" id="login-msg"></p>
+        </form>
+
         <form class="card" id="join-form" novalidate>
           <h3 class="form-title"><b>①</b> 회원 가입 신청</h3>
-          <label class="f" for="join-name">이름</label>
-          <input class="t" id="join-name" maxlength="40" autocomplete="name" required>
-          <label class="f" for="join-email">이메일</label>
-          <input class="t" id="join-email" type="email" maxlength="100" autocomplete="email" required>
-          <label class="f" for="join-phone">휴대폰 번호 (선택)</label>
-          <input class="t" id="join-phone" type="tel" maxlength="13" autocomplete="tel" placeholder="010-1234-5678">
+          <p class="req-note">모든 항목이 <b>필수</b>입니다. 하나라도 빠지거나 형식이 맞지 않으면 가입이 거절됩니다.</p>
+          <label class="f" for="join-name">실명 <em>*</em></label>
+          <input class="t" id="join-name" maxlength="40" autocomplete="name" placeholder="예) 홍길동" required>
+          <label class="f" for="join-email">이메일 (아이디) <em>*</em></label>
+          <input class="t" id="join-email" type="email" maxlength="100" autocomplete="email" placeholder="인증키와 안내 메일을 받을 주소" required>
+          <div class="row2">
+            <div><label class="f" for="join-pw">비밀번호 <em>*</em></label>
+              <input class="t" id="join-pw" type="password" maxlength="12" autocomplete="new-password" required></div>
+            <div><label class="f" for="join-pw2">비밀번호 확인 <em>*</em></label>
+              <input class="t" id="join-pw2" type="password" maxlength="12" autocomplete="new-password" required></div>
+          </div>
+          <ul class="pw-rules" id="pw-rules">
+            <li data-r="len">8~12자</li><li data-r="upper">영문 대문자</li><li data-r="lower">영문 소문자</li>
+            <li data-r="digit">숫자</li><li data-r="special">특수기호</li>
+          </ul>
+          <label class="f" for="join-phone">휴대폰 번호 <em>*</em></label>
+          <input class="t" id="join-phone" type="tel" maxlength="13" autocomplete="tel" placeholder="010-1234-5678" required>
           <div class="privacy-box">
             <b>개인정보 수집·이용 안내</b><br>
-            필수: 이름, 이메일 · 선택: 휴대폰 번호 · 자동: 접속 IP, 동의 일시<br>
-            목적: 가입 승인과 회원 관리, 인증키 안내, 문의 답변 · 보유: 탈퇴 후 1년<br>
+            필수: 실명, 이메일, 비밀번호(암호화 저장), 휴대폰 번호 · 자동: 접속 IP, 동의 일시<br>
+            목적: 가입 승인과 회원 관리, 로그인, 설치 파일 제공, 인증키 발송, 문의 답변 · 보유: 탈퇴 후 1년<br>
             동의하지 않으면 가입할 수 없습니다. <a href="member-terms.html#privacy" target="_blank">자세히 보기</a>
           </div>
           <label class="agree"><input type="checkbox" id="join-agree-terms">
@@ -163,24 +195,46 @@
           <button class="btn btn-primary" type="submit" id="join-btn" style="width:100%;justify-content:center">회원 가입 신청</button>
           <p class="msg" id="join-msg"></p>
         </form>
+      </div>
 
-        <form class="card" id="req-form" novalidate>
-          <h3 class="form-title"><b>②</b> 인증키 사용 신청 <small>가입 승인 후</small></h3>
-          <label class="f" for="req-email">가입한 이메일</label>
-          <input class="t" id="req-email" type="email" maxlength="100" autocomplete="email" required>
-          <label class="f" for="req-memo">사용 목적 · 메모 (선택)</label>
-          <textarea class="t" id="req-memo" maxlength="500" placeholder="예) 개인 투자 참고용"></textarea>
-          <div class="privacy-box">
-            <b>인증키 이용약관 주요 내용</b><br>
-            · 인증키 1개는 동시에 1대의 PC에서만 사용 — 2대 이상 동시 실행 시 즉시 정지<br>
-            · 프로그램·인증키의 공유·양도·복제·배포·수정 금지<br>
-            · 위반 시 이용 정지와 민·형사상 법적 조치 대상
-          </div>
-          <label class="agree"><input type="checkbox" id="req-agree">
-            <span>[필수] <a href="terms.html" target="_blank">인증키 이용약관(최종 사용자 사용권 계약)</a>을 읽었으며 동의합니다. 인증키를 다른 사람과 공유하지 않겠습니다.</span></label>
-          <button class="btn btn-primary" type="submit" id="req-btn" style="width:100%;justify-content:center">인증키 사용 신청</button>
-          <p class="msg" id="req-msg"></p>
-        </form>
+      <!-- 비밀번호 재설정(이메일 링크로 들어온 경우) -->
+      <form class="card narrow" id="reset-form" hidden novalidate>
+        <h3 class="form-title"><b>🔑</b> 새 비밀번호 설정</h3>
+        <label class="f" for="reset-pw">새 비밀번호 (8자 이상)</label>
+        <input class="t" id="reset-pw" type="password" maxlength="72" autocomplete="new-password">
+        <label class="f" for="reset-pw2">새 비밀번호 확인</label>
+        <input class="t" id="reset-pw2" type="password" maxlength="72" autocomplete="new-password">
+        <button class="btn btn-primary" type="submit" id="reset-btn" style="width:100%;justify-content:center">비밀번호 바꾸기</button>
+        <p class="msg" id="reset-msg"></p>
+      </form>
+
+      <!-- 로그인 상태: 내 정보 / 인증키 요청서 -->
+      <div class="grid2" id="acct-in" hidden>
+        <div class="card" id="me-card">
+          <h3 class="form-title"><b>👤</b> 내 정보 <button type="button" class="link-btn" id="logout-btn">로그아웃</button></h3>
+          <dl class="me">
+            <dt>이름</dt><dd id="me-name">-</dd>
+            <dt>이메일</dt><dd id="me-email">-</dd>
+            <dt>가입 상태</dt><dd><span class="pill" id="me-approval">-</span></dd>
+            <dt>회원 권한</dt><dd id="me-role">-</dd>
+            <dt>사용 기한</dt><dd id="me-period">-</dd>
+          </dl>
+          <p class="hint" id="me-note"></p>
+          <p class="msg" id="me-msg"></p>
+        </div>
+
+        <div class="card" id="guide-card">
+          <h3 class="form-title"><b>🔑</b> 인증키 받는 방법</h3>
+          <div id="guide-state" class="state"></div>
+          <ol class="howto">
+            <li>위 <a href="#download">다운로드</a>에서 설치 파일을 받아 설치합니다.</li>
+            <li>Stock Picker를 실행하면 <b>로그인 창</b>이 열립니다. 사이트 회원 <b>이메일 · 비밀번호</b>를 입력합니다.</li>
+            <li>로그인 창 아래 <b>[인증키 신청]</b>을 누르고, 인증키 이용약관에 동의한 뒤 신청합니다.</li>
+            <li>운영자가 확인 후 <b>가입한 이메일</b>로 인증키를 보내 드립니다.</li>
+            <li>로그인 창에 이메일 · 비밀번호 · 인증키를 넣고 로그인하면 시작됩니다.</li>
+          </ol>
+          <p class="hint">인증키는 사이트에 표시하지 않고 가입 이메일로만 보내 드립니다. 메일이 보이지 않으면 스팸함을 확인해 주세요.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -213,6 +267,7 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 </body>
