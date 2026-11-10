@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Stock Picker — 업종·테마별 단기 관심 종목 추천</title>
+<meta name="description" content="업종이나 테마를 고르면 단기 투자 factor로 점수를 매겨 관심 종목 5개와 추천 근거를 보여 주는 Windows 프로그램">
+<link rel="icon" href="favicon.png">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top"><span>▲</span> Stock Picker</a>
+    <nav>
+      <a href="#features">기능</a>
+      <a href="#how">사용 방법</a>
+      <a href="#download">다운로드</a>
+      <a href="#request">회원 가입</a>
+      <a href="#notices">공지</a>
+      <a href="terms.html">약관</a>
+    </nav>
+    <a class="cta" href="#download">다운로드</a>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <span class="badge" id="hero-badge">Windows 프로그램 · v1.0.0</span>
+        <h1>업종·테마를 고르면,<br><em>지금 볼 만한 5종목</em>과<br>그 이유까지.</h1>
+        <p class="lead">추세·수급·모멘텀·거래량·공시까지 단기 투자 factor로 점수를 매겨, 관심 종목 TOP 5와 추천 근거·주의할 점을 한 화면에 보여 줍니다.</p>
+        <div class="btns">
+          <a class="btn btn-primary" href="#download">설치 파일 받기</a>
+          <a class="btn btn-ghost" href="#request">회원 가입 · 인증키 신청</a>
+        </div>
+        <p class="meta">인증키가 있어야 사용할 수 있습니다 · 투자 권유가 아닌 참고용 프로그램입니다</p>
+      </div>
+
+      <div>
+        <div class="mock" aria-label="프로그램 화면 예시">
+          <div class="mock-head"><b>▲ Stock Picker</b><span class="chip"><i>●</i> 국내 정규장</span><span class="chip" style="margin-left:6px">10:31:02</span></div>
+          <div class="mock-body">
+            <div>
+              <div class="mock-card">
+                <h4>시장 현황</h4>
+                <div class="tiles">
+                  <div class="tile"><small>KOSPI</small><b class="up">▲ 0.83%</b></div>
+                  <div class="tile"><small>KOSDAQ</small><b class="down">▼ 0.21%</b></div>
+                  <div class="tile"><small>테마 강도</small><b class="good">강세</b></div>
+                </div>
+                <h4>추천 종목 TOP 5 · 테마 예시</h4>
+                <div class="rank sel"><span>1</span><span>예시전자</span><span class="up">+3.2%</span><span class="g">A</span></div>
+                <div class="rank"><span>2</span><span>예시테크</span><span class="up">+1.8%</span><span class="g">A</span></div>
+                <div class="rank"><span>3</span><span>예시바이오</span><span class="up">+0.9%</span><span class="g">B</span></div>
+                <div class="rank"><span>4</span><span>예시산업</span><span class="down">-0.4%</span><span class="g">B</span></div>
+                <div class="rank"><span>5</span><span>예시에너지</span><span class="up">+2.1%</span><span class="g">C</span></div>
+              </div>
+            </div>
+            <div class="mock-card">
+              <h4>예시전자 · 82점</h4>
+              <small>추세</small><div class="bar"><i style="width:90%"></i></div>
+              <small>수급</small><div class="bar"><i style="width:75%"></i></div>
+              <small>모멘텀</small><div class="bar"><i style="width:80%"></i></div>
+              <b class="good">✔ 추천 근거</b>
+              <ul class="why">
+                <li>외국인·기관 동반 순매수</li>
+                <li>52주 신고가 돌파 시도</li>
+                <li>[공시] 공급계약 체결</li>
+              </ul>
+              <b class="up">⚠ 주의할 점</b>
+              <ul class="why"><li>RSI 76 — 단기 과매수</li></ul>
+            </div>
+          </div>
+        </div>
+        <p class="mock-note">화면 예시 · 종목명과 수치는 가상입니다</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="features">
+    <div class="wrap">
+      <div class="kicker">기능</div>
+      <h2>단기 투자에 필요한 판단 근거를 한곳에</h2>
+      <p class="sec-lead">네이버 증권과 DART 전자공시 데이터를 정해진 규칙으로 점수화해, 왜 이 종목인지까지 설명합니다.</p>
+      <div class="grid3">
+        <div class="card"><div class="ico">100</div><h3>단기 factor 점수</h3><p>유동성·추세·모멘텀·거래량·신고가·수급·펀더멘털 7개 팩터, 100점 만점에 과열 신호는 감점합니다.</p></div>
+        <div class="card"><div class="ico">공</div><h3>DART 공시 분석</h3><p>CB·BW·유상증자 같은 물량 부담은 감점, 자사주·수주 공시는 가점. 회생·상장폐지 관련 종목은 제외합니다.</p></div>
+        <div class="card"><div class="ico">◎</div><h3>추천 근거와 주의점</h3><p>종목을 누르면 강점 팩터, 주의할 점, 손절·목표 참고가, 관련 뉴스와 증권사 리포트를 함께 보여 줍니다.</p></div>
+        <div class="card"><div class="ico">⏱</div><h3>국내·미국 장 상태</h3><p>정규장·프리·애프터마켓과 남은 시간을 표시하고, 장중에는 KOSPI·KOSDAQ을 10초마다 갱신합니다.</p></div>
+        <div class="card"><div class="ico">★</div><h3>업종·테마 즐겨찾기</h3><p>자주 보는 업종과 테마를 즐겨찾기로 모아 두고 바로 분석합니다.</p></div>
+        <div class="card"><div class="ico">!</div><h3>일정·이벤트 경고</h3><p>옵션 만기일, FOMC, 실적 발표 대기 구간처럼 변동성이 커지는 일정을 미리 알려 줍니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how" class="alt">
+    <div class="wrap">
+      <div class="kicker">사용 방법</div>
+      <h2>세 단계면 시작할 수 있습니다</h2>
+      <p class="sec-lead">인증키 1개는 동시에 1대의 PC에서 사용할 수 있습니다. 인증키는 현재 운영자 확인 후 무료로 부여됩니다.</p>
+      <div class="steps">
+        <div class="step"><h3>회원 가입 · 인증키 신청</h3><p>회원 가입을 신청하면 운영자가 확인 후 승인합니다. 승인되면 인증키 사용을 신청하고, 인증키를 이메일로 받습니다.</p></div>
+        <div class="step"><h3>설치하고 인증</h3><p>설치 파일을 실행하고, 처음 실행 화면에 인증키를 입력한 뒤 이용약관에 동의합니다.</p></div>
+        <div class="step"><h3>업종·테마 선택</h3><p>관심 있는 업종이나 테마를 고르고 [추천 종목 분석]을 누르면 10~30초 안에 결과가 나옵니다.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="download">
+    <div class="wrap two">
+      <div>
+        <div class="kicker">다운로드</div>
+        <h2>설치 파일 받기</h2>
+        <p class="sec-lead" style="margin-bottom:24px">설치 파일만으로는 실행되지 않으며, 발급받은 인증키가 필요합니다.</p>
+        <div class="warn">처음 실행할 때 Windows가 "PC 보호" 경고를 띄우면 <b>[추가 정보] → [실행]</b>을 누르세요. 개인 개발 프로그램이라 코드 서명이 없어 나오는 안내입니다.</div>
+      </div>
+      <div class="card dl">
+        <dl>
+          <dt>버전</dt><dd id="dl-version">-</dd>
+          <dt>출시일</dt><dd id="dl-date">-</dd>
+          <dt>파일 크기</dt><dd id="dl-size">-</dd>
+          <dt>사용 환경</dt><dd id="dl-req">-</dd>
+        </dl>
+        <label class="agree"><input type="checkbox" id="dl-agree">
+          <span><a href="terms.html" target="_blank">이용약관 및 개인정보 처리 안내</a>를 읽었으며 동의합니다. 프로그램과 설치 파일을 다른 사람에게 배포·공유하지 않겠습니다.</span></label>
+        <button class="btn btn-primary" id="dl-btn" disabled style="width:100%;justify-content:center">설치 파일 다운로드</button>
+        <p class="hint" id="dl-portable"></p>
+        <p class="msg err" id="dl-msg"></p>
+      </div>
+    </div>
+  </section>
+
+  <section id="request" class="alt">
+    <div class="wrap">
+      <div class="kicker">회원</div>
+      <h2>회원 가입 · 인증키 사용 신청</h2>
+      <p class="sec-lead">① 회원 가입을 신청하면 운영자가 확인 후 승인하고 이메일로 알려 드립니다. ② 승인된 회원은 인증키 이용약관에 동의하고 인증키 사용을 신청할 수 있습니다.</p>
+      <div class="flow">
+        <span class="on">① 회원 가입 신청</span><i>→</i><span>운영자 승인</span><i>→</i><span class="on">② 인증키 사용 신청</span><i>→</i><span>인증키 이메일 발송</span>
+      </div>
+      <div class="grid2">
+        <form class="card" id="join-form" novalidate>
+          <h3 class="form-title"><b>①</b> 회원 가입 신청</h3>
+          <label class="f" for="join-name">이름</label>
+          <input class="t" id="join-name" maxlength="40" autocomplete="name" required>
+          <label class="f" for="join-email">이메일</label>
+          <input class="t" id="join-email" type="email" maxlength="100" autocomplete="email" required>
+          <label class="f" for="join-phone">휴대폰 번호 (선택)</label>
+          <input class="t" id="join-phone" type="tel" maxlength="13" autocomplete="tel" placeholder="010-1234-5678">
+          <div class="privacy-box">
+            <b>개인정보 수집·이용 안내</b><br>
+            필수: 이름, 이메일 · 선택: 휴대폰 번호 · 자동: 접속 IP, 동의 일시<br>
+            목적: 가입 승인과 회원 관리, 인증키 안내, 문의 답변 · 보유: 탈퇴 후 1년<br>
+            동의하지 않으면 가입할 수 없습니다. <a href="member-terms.html#privacy" target="_blank">자세히 보기</a>
+          </div>
+          <label class="agree"><input type="checkbox" id="join-agree-terms">
+            <span>[필수] <a href="member-terms.html" target="_blank">사이트 회원 이용약관</a>에 동의합니다.</span></label>
+          <label class="agree"><input type="checkbox" id="join-agree-privacy">
+            <span>[필수] 위 개인정보 수집·이용에 동의합니다.</span></label>
+          <button class="btn btn-primary" type="submit" id="join-btn" style="width:100%;justify-content:center">회원 가입 신청</button>
+          <p class="msg" id="join-msg"></p>
+        </form>
+
+        <form class="card" id="req-form" novalidate>
+          <h3 class="form-title"><b>②</b> 인증키 사용 신청 <small>가입 승인 후</small></h3>
+          <label class="f" for="req-email">가입한 이메일</label>
+          <input class="t" id="req-email" type="email" maxlength="100" autocomplete="email" required>
+          <label class="f" for="req-memo">사용 목적 · 메모 (선택)</label>
+          <textarea class="t" id="req-memo" maxlength="500" placeholder="예) 개인 투자 참고용"></textarea>
+          <div class="privacy-box">
+            <b>인증키 이용약관 주요 내용</b><br>
+            · 인증키 1개는 동시에 1대의 PC에서만 사용 — 2대 이상 동시 실행 시 즉시 정지<br>
+            · 프로그램·인증키의 공유·양도·복제·배포·수정 금지<br>
+            · 위반 시 이용 정지와 민·형사상 법적 조치 대상
+          </div>
+          <label class="agree"><input type="checkbox" id="req-agree">
+            <span>[필수] <a href="terms.html" target="_blank">인증키 이용약관(최종 사용자 사용권 계약)</a>을 읽었으며 동의합니다. 인증키를 다른 사람과 공유하지 않겠습니다.</span></label>
+          <button class="btn btn-primary" type="submit" id="req-btn" style="width:100%;justify-content:center">인증키 사용 신청</button>
+          <p class="msg" id="req-msg"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <section id="notices">
+    <div class="wrap">
+      <div class="kicker">공지 · 변경 내역</div>
+      <h2>새 소식</h2>
+      <p class="sec-lead">버전 업데이트와 약관 변경은 이곳에 미리 알려 드립니다.</p>
+      <div class="notices" id="notice-list"></div>
+    </div>
+  </section>
+</main>
+
+<div class="disclaimer">
+  <div class="wrap">Stock Picker가 보여 주는 정보는 공개 데이터를 정해진 규칙으로 계산한 참고 정보이며 투자 권유가 아닙니다. 투자 판단과 그 결과에 대한 책임은 투자자 본인에게 있습니다.</div>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <b>▲ Stock Picker</b><br>
+      개발자 <span class="dev">Jongse Kim</span> · 문의 <a class="mail" href="mailto:skysmell00@gmail.com">skysmell00@gmail.com</a><br>
+      Copyright © 2026 Jongse Kim. All rights reserved.<br>
+      <span class="legal">프로그램과 설치 파일의 무단 복제·배포·수정을 금지합니다.</span>
+    </div>
+    <div>
+      <a href="member-terms.html">회원 이용약관</a> · <a href="terms.html">인증키 이용약관</a> · <a href="terms.html#privacy"><b>개인정보 처리방침</b></a>
+    </div>
+  </div>
+</footer>
+
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
