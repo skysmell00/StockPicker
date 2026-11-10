@@ -6,7 +6,7 @@
 <title>Stock Picker — 업종·테마별 단기 관심 종목 추천</title>
 <meta name="description" content="업종이나 테마를 고르면 단기 투자 factor로 점수를 매겨 관심 종목 5개와 추천 근거를 보여 주는 Windows 프로그램">
 <link rel="icon" href="favicon.png">
-<link rel="stylesheet" href="style.css?v=2.0.1">
+<link rel="stylesheet" href="style.css?v=2.0.3">
 </head>
 <body>
 
@@ -19,6 +19,7 @@
       <a href="#download">다운로드</a>
       <a href="#account">회원</a>
       <a href="#notices">공지</a>
+      <a href="#donate" id="nav-donate" hidden>후원</a>
       <a href="terms.html">약관</a>
     </nav>
     <a class="cta" href="#account" id="nav-account">로그인 · 회원 가입</a>
@@ -247,6 +248,29 @@
       <div class="notices" id="notice-list"></div>
     </div>
   </section>
+
+  <section id="donate" class="alt" hidden>
+    <div class="wrap">
+      <div class="kicker">후원</div>
+      <h2>개발을 응원해 주세요</h2>
+      <div class="donate-card">
+        <div class="donate-ico">☕</div>
+        <div class="donate-body">
+          <p id="donate-msg"></p>
+          <div class="donate-qr" id="donate-qr-box" hidden>
+            <img id="donate-qr" alt="토스 송금 QR 코드">
+            <span>휴대폰 카메라나 토스 앱으로 QR을 찍으면<br>송금 화면이 열립니다.</span>
+          </div>
+          <a class="btn btn-toss" id="donate-toss" href="#" target="_blank" rel="noopener" hidden>토스로 후원하기</a>
+          <ul class="donate-notes">
+            <li>후원은 자유이며, 회원 가입 승인·인증키 발급·회원 등급과는 <b>관계가 없습니다</b>.</li>
+            <li>후원금은 기부금 영수증이 발급되지 않으며, 송금 후에는 돌려 드리기 어렵습니다.</li>
+            <li>QR·링크는 토스가 제공하는 공식 송금 화면으로 연결됩니다. 받는 사람이 개발자(Jongse Kim)인지 확인 후 송금하세요.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
 </main>
 
 <div class="disclaimer">
@@ -268,7 +292,7 @@
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="config.js?v=2.0.1"></script>
-<script src="app.js?v=2.0.1"></script>
+<script src="config.js?v=2.0.3"></script>
+<script src="app.js?v=2.0.3"></script>
 </body>
 </html>

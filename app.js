@@ -243,6 +243,7 @@
   // ---- 공지 ----
   const list = $("notice-list");
   if (list) {
+    renderDonation();
     const items = C.notices || [];
     list.innerHTML = items.length ? items.map((n) => `
       <article class="notice">
@@ -281,5 +282,21 @@
       doc.innerHTML = html;
       if (location.hash) { const t = document.querySelector(location.hash); if (t) t.scrollIntoView(); }
     }).catch(() => { doc.innerHTML = "<p>약관을 불러오지 못했습니다. 약관 파일(.txt)을 확인하세요.</p>"; });
+  }
+
+  // ---------------- 후원 (config.js 의 donation.qrImage 또는 tossUrl 이 있을 때만 표시) ----------------
+  function renderDonation() {
+    const d = C.donation || {};
+    if (!$("donate")) return;
+    const url = String(d.tossUrl || "").trim();
+    const qr = String(d.qrImage || "").trim();
+    const okUrl = /^https:\/\/([\w-]+\.)*toss\.(me|im)(\/[^\s"'<>]*)?$/i.test(url);     // 토스 주소만
+    const okQr = /^[\w.\-\/]+\.(png|jpe?g|gif|webp|svg)$/i.test(qr) && !qr.includes("..");
+    if (!okUrl && !okQr) return;
+    $("donate-msg").textContent = d.message || "";
+    if (okQr) { $("donate-qr").src = qr; $("donate-qr-box").hidden = false; }
+    if (okUrl) { $("donate-toss").href = url; $("donate-toss").hidden = false; }
+    $("donate").hidden = false;
+    $("nav-donate").hidden = false;
   }
 })();

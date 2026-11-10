@@ -197,3 +197,19 @@ label.f em { color: var(--red); font-style: normal; }
 .pw-rules li.ok::before { content: "✔ "; }
 ol.howto { margin: 0 0 12px; padding-left: 20px; font-size: 14.5px; color: var(--ink); }
 ol.howto li { margin: 6px 0; }
+
+/* 후원 */
+.donate-card { display: flex; gap: 22px; align-items: flex-start; background: #fff; border: 1px solid var(--line);
+  border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); max-width: 760px; }
+.donate-ico { font-size: 34px; width: 64px; height: 64px; flex: none; display: grid; place-items: center;
+  border-radius: 16px; background: #EFF6FF; }
+.donate-body p { margin: 0 0 16px; color: var(--sub); font-size: 15px; }
+.btn-toss { background: #0064FF; color: #fff; }
+.btn-toss:hover { background: #0050CC; }
+.donate-notes { margin: 18px 0 0; padding-left: 18px; color: var(--faint); font-size: 13px; }
+.donate-notes li { margin: 3px 0; }
+@media (max-width: 640px) { .donate-card { flex-direction: column; } }
+.donate-qr { display: flex; align-items: center; gap: 18px; margin: 0 0 16px; }
+.donate-qr img { width: 168px; height: 168px; object-fit: contain; background: #fff; border: 1px solid var(--line);
+  border-radius: 12px; padding: 8px; }
+.donate-qr span { color: var(--sub); font-size: 14px; }

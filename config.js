@@ -18,6 +18,15 @@ window.SP_CONFIG = {
 
   termsVersion: "1.0",          // 인증키 이용약관(license.txt) 버전
   memberTermsVersion: "1.0",    // 사이트 회원 이용약관(member_terms.txt) 버전
+  // 후원 (토스) — 둘 다 비워 두면 사이트의 '후원' 메뉴와 섹션이 숨겨집니다.
+  //  qrImage : 토스 앱에서 만든 '송금 받기 QR' 이미지를 site 폴더에 넣고 파일 이름을 적으세요. 예: "toss_qr.png"
+  //  tossUrl : (있으면) QR을 휴대폰 카메라로 찍었을 때 나오는 https 주소. 버튼으로 표시됩니다.
+  donation: {
+    qrImage: "toss_qr.png",
+    tossUrl: "",
+    message: "Stock Picker는 개인 개발자가 시간을 들여 만들고 운영하는 프로그램입니다. 도움이 되셨다면 커피 한 잔 값으로 개발을 응원해 주세요. 후원금은 서버·도구 비용과 기능 개선에 쓰입니다."
+  },
+
   developer: "Jongse Kim",
   contact: "skysmell00@gmail.com",
 
