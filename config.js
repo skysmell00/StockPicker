@@ -9,7 +9,7 @@ window.SP_CONFIG = {
 
   // GitHub Releases 에 올린 설치 파일 주소 (배포가이드.md 4단계)
   // 형식: https://github.com/<GitHub 아이디>/stockpicker/releases/download/v1.0.0/StockPicker-Setup-1.0.0.exe
-  downloadUrl: "",
+  downloadUrl: "https://github.com/skysmell00/StockPicker/releases/download/v1.0.0/StockPicker-Setup-1.0.0.exe",
   portableUrl: "",
 
   // 회원 가입 · 인증키 신청 접수용 (공개용 publishable 키 — 사이트에 넣어도 안전합니다. secret 키는 절대 금지)
