@@ -2,7 +2,7 @@
    Stock Picker 배포 사이트 설정 — 새 버전을 낼 때 여기만 고치면 됩니다.
    ================================================================ */
 window.SP_CONFIG = {
-  version: "2.1.0",
+  version: "2.2.0",
   releaseDate: "2026-11-11",
   fileSize: "약 19MB",
   requirements: "Windows 10 / 11 (64비트) · 인터넷 연결",
@@ -10,7 +10,7 @@ window.SP_CONFIG = {
   // 설치 파일: Supabase → Storage → 'releases' 버킷(비공개)에 올린 파일 이름 (배포가이드.md 4단계)
   //  승인된 회원이 로그인해야만 60초짜리 임시 링크로 내려받을 수 있습니다. (GitHub Releases 공개 링크는 쓰지 않습니다)
   storageBucket: "releases",
-  downloadFile: "StockPicker-Setup-2.1.0.exe",
+  downloadFile: "StockPicker-Setup-2.2.0.exe",
 
   // 로그인 · 회원 가입 · 인증키 요청서 (공개용 publishable 키 — 사이트에 넣어도 안전합니다. secret 키는 절대 금지)
   supabaseUrl: "https://pkroaimoxdeedxajewtr.supabase.co",
@@ -32,6 +32,8 @@ window.SP_CONFIG = {
 
   // 공지 · 변경 내역 (최신이 위)
   notices: [
+    { date: "2026-11-11", type: "업데이트", title: "Stock Picker 2.2.0 — ETF 분석 추가",
+      body: "국내 상장 ETF를 대분류(국내주식·해외주식·채권·원자재 등)·중분류(반도체·미국 기술·국채 등)·배율(1배·레버리지·인버스)로 나누어 추천 TOP 5를 보여 드립니다. 상세 화면에서 구성 종목 블록 그림, 기간 수익률, 총보수·괴리율, 같은 지수 다른 상품 비교를 확인할 수 있습니다. 2.1.0 사용자는 프로그램 실행 시 업데이트 안내가 나옵니다." },
     { date: "2026-11-11", type: "업데이트", title: "Stock Picker 2.1.0 — 인증키 한 번 등록 · 자동 업데이트 · 의견 보내기",
       body: "로그인 창에는 이메일·비밀번호만 입력하고, 인증키는 로그인 후 한 번만 등록하면 같은 PC·같은 계정에서 자동 적용됩니다. 새 버전이 나오면 프로그램 안에서 바로 업데이트할 수 있고, [💬 의견 보내기]로 개발자에게 언제든 의견을 보낼 수 있습니다. (2.0.0 사용자는 이번 한 번만 사이트에서 2.1.0을 받아 설치해 주세요)" },
     { date: "2026-11-10", type: "안내", title: "회원제 운영 안내",
