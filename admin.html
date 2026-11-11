@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0F172A">
+<title>Stock Picker 관리</title>
+<link rel="icon" href="favicon.png">
+<style>
+:root{--bg:#EEF2F6;--card:#fff;--line:#E2E8F0;--text:#0F172A;--sub:#64748B;--faint:#94A3B8;--accent:#2563EB;
+--accent-soft:#DBEAFE;--good:#059669;--good-soft:#D1FAE5;--warn:#C2410C;--warn-soft:#FEF3C7;--red:#DC2626}
+*{box-sizing:border-box}
+body{margin:0;font-family:-apple-system,"Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:var(--bg);color:var(--text);
+-webkit-text-size-adjust:100%}
+header{background:#0F172A;color:#fff;padding:14px 16px calc(14px);position:sticky;top:0;z-index:5}
+header h1{margin:0;font-size:17px}header .who{font-size:12px;color:#94A3B8;margin-top:2px}
+header button{float:right;background:transparent;border:1px solid #334155;color:#CBD5E1;border-radius:8px;padding:6px 10px;font-size:12px}
+main{padding:12px 12px 90px;max-width:720px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.card h2{font-size:15px;margin:0 0 8px}
+label{display:block;font-size:12px;color:var(--sub);font-weight:700;margin:10px 0 4px}
+input,select{width:100%;font-size:16px;padding:11px 12px;border:1px solid var(--line);border-radius:10px;background:#F8FAFC}
+.btn{display:inline-block;text-decoration:none;text-align:center;border:0;border-radius:10px;padding:11px 14px;font-size:15px;font-weight:700;background:var(--accent);color:#fff;
+margin:4px 4px 0 0}
+.btn.ghost{background:#F1F5F9;color:var(--text)}.btn.good{background:var(--good)}.btn.danger{background:#FEE2E2;color:var(--red)}
+.btn.small{padding:8px 10px;font-size:13px}.btn:disabled{opacity:.5}
+.full{display:block;width:100%;margin-right:0}
+.msg{font-size:13px;margin-top:10px;color:var(--sub);white-space:pre-line}.msg.err{color:var(--red)}.msg.ok{color:var(--good)}
+.tabs{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);display:flex;z-index:5;
+padding-bottom:env(safe-area-inset-bottom)}
+.tabs button{flex:1;border:0;background:none;padding:10px 0 12px;font-size:12px;color:var(--sub);font-weight:700}
+.tabs button.on{color:var(--accent)}.tabs b{display:block;font-size:18px;margin-bottom:2px}
+.badge{display:inline-block;min-width:18px;padding:0 5px;border-radius:9px;background:var(--red);color:#fff;font-size:11px;margin-left:3px}
+.item{border-top:1px solid var(--line);padding:12px 0}.item:first-child{border-top:0;padding-top:2px}
+.name{font-weight:800;font-size:15px}.meta{font-size:12px;color:var(--sub);margin-top:3px;line-height:1.5;word-break:break-all}
+.chip{display:inline-block;font-size:11px;border-radius:6px;padding:1px 6px;background:#F1F5F9;color:var(--sub);margin-right:3px;font-weight:700}
+.chip.premium{background:var(--accent-soft);color:var(--accent)}.chip.monitor{background:#EDE9FE;color:#6D28D9}
+.chip.pending{background:var(--warn-soft);color:var(--warn)}.chip.new{background:#FEE2E2;color:var(--red)}
+.empty{color:var(--faint);font-size:13px;padding:8px 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:#F8FAFC;border-radius:10px;padding:10px 6px;text-align:center}.stat b{display:block;font-size:20px}
+.stat span{font-size:11px;color:var(--sub)}
+.sheet{position:fixed;inset:0;background:rgba(15,23,42,.45);display:flex;align-items:flex-end;z-index:10}
+.sheet>div{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px
+calc(18px + env(safe-area-inset-bottom))}
+.sheet h3{margin:0 0 6px}
+.months{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}
+.months button{padding:12px 0;border-radius:10px;border:1px solid var(--line);background:#F8FAFC;font-size:15px;font-weight:700}
+.months button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+pre{white-space:pre-wrap;background:#F8FAFC;border-radius:10px;padding:10px;font-size:12px;max-height:240px;overflow:auto}
+.key{font-family:Consolas,monospace;font-size:18px;font-weight:800;color:var(--accent);letter-spacing:.5px}
+.qr{text-align:center;margin:10px 0}.qr img{width:200px;height:200px}
+.search{margin-bottom:6px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <button id="btn-logout" hidden>로그아웃</button>
+  <h1>Stock Picker 관리</h1>
+  <div class="who" id="who">관리자 전용</div>
+</header>
+<main>
+  <!-- 1) 로그인 -->
+  <section id="v-login" class="card" hidden>
+    <h2>관리자 로그인</h2>
+    <label>이메일</label><input id="l-email" type="email" autocomplete="username">
+    <label>비밀번호</label><input id="l-pw" type="password" autocomplete="current-password">
+    <button class="btn full" id="l-btn" style="margin-top:14px">로그인</button>
+    <div class="msg" id="l-msg"></div>
+  </section>
+
+  <!-- 2) OTP 등록 / 확인 -->
+  <section id="v-mfa" class="card" hidden>
+    <h2 id="m-title">2단계 인증</h2>
+    <div id="m-enroll" hidden>
+      <div class="msg">처음 한 번만 등록합니다. 휴대폰의 OTP 앱(Google Authenticator · Microsoft Authenticator 등)에서
+        아래 QR을 찍거나 비밀 키를 입력한 뒤, 앱에 나온 6자리 숫자를 넣으세요.</div>
+      <div class="qr"><img id="m-qr" alt="OTP 등록 QR"></div>
+      <div class="meta">비밀 키: <b id="m-secret"></b></div>
+    </div>
+    <label>OTP 6자리</label><input id="m-code" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+    <button class="btn full" id="m-btn" style="margin-top:14px">확인</button>
+    <div class="msg" id="m-msg"></div>
+  </section>
+
+  <!-- 3) 관리 화면 -->
+  <section id="v-app" hidden>
+    <div id="t-home">
+      <div class="card">
+        <div class="stats">
+          <div class="stat"><b id="s-pm">0</b><span>가입 대기</span></div>
+          <div class="stat"><b id="s-pr">0</b><span>키 신청</span></div>
+          <div class="stat"><b id="s-fb">0</b><span>새 의견</span></div>
+          <div class="stat"><b id="s-ex">0</b><span>7일 내 만료</span></div>
+        </div>
+        <button class="btn ghost small" id="btn-reload" style="margin-top:10px">↻ 새로 고침</button>
+        <span class="meta" id="loaded-at"></span>
+      </div>
+      <div class="card"><h2>회원 가입 승인 대기</h2><div id="list-pm"></div></div>
+      <div class="card"><h2>인증키 신청</h2><div id="list-pr"></div></div>
+    </div>
+    <div id="t-members" hidden>
+      <div class="card">
+        <input class="search" id="mem-q" placeholder="이름 · 이메일 · 휴대폰 검색">
+        <div id="list-mem"></div>
+      </div>
+    </div>
+    <div id="t-feedback" hidden><div class="card"><h2>회원 의견</h2><div id="list-fb"></div></div></div>
+    <div id="t-settings" hidden>
+      <div class="card">
+        <h2>새 신청 알림 (휴대폰 푸시)</h2>
+        <div class="msg">휴대폰에 <b>ntfy</b> 앱을 설치하고 아래 주제(topic)를 구독하면, 가입 신청 · 인증키 신청 · 의견이 들어올 때
+          알림이 옵니다. 알림에는 이름 · 이메일 같은 개인정보가 들어가지 않습니다.</div>
+        <label>구독 주제 (남에게 알려 주지 마세요)</label><input id="set-topic" readonly>
+        <button class="btn ghost small" id="btn-copy-topic">주제 복사</button>
+        <button class="btn ghost small" id="btn-new-topic">새 주제로 바꾸기</button>
+        <label>알림 메일도 받기 (선택)</label><input id="set-email" type="email" placeholder="비워 두면 메일 알림 없음">
+        <button class="btn small" id="btn-save-email">저장</button>
+        <div class="msg" id="set-msg"></div>
+      </div>
+      <div class="card">
+        <h2>도움말</h2>
+        <div class="msg">• 회원 이용 정지 · 탈퇴 · 기간 직접 수정 · 정보 수정은 PC의 Stock Picker Controller에서 하세요.
+• 안내 메일은 [메일 보내기]를 누르면 휴대폰 메일 앱에 받는 사람 · 제목 · 본문이 채워져 열립니다. 보내기만 누르세요.
+• 이 페이지는 관리자 계정 + OTP 인증을 마친 경우에만 동작합니다.</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs" id="tabs" hidden>
+  <button data-t="home" class="on"><b>🏠</b>처리할 일<span class="badge" id="b-home" hidden></span></button>
+  <button data-t="members"><b>👥</b>회원</button>
+  <button data-t="feedback"><b>💬</b>의견<span class="badge" id="b-fb" hidden></span></button>
+  <button data-t="settings"><b>⚙</b>알림 · 설정</button>
+</nav>
+
+<div class="sheet" id="sheet" hidden><div id="sheet-body"></div></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="config.js?v=2.2.0"></script>
+<script src="admin.js?v=2.2.0"></script>
+</body>
+</html>
