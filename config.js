@@ -2,15 +2,15 @@
    Stock Picker 배포 사이트 설정 — 새 버전을 낼 때 여기만 고치면 됩니다.
    ================================================================ */
 window.SP_CONFIG = {
-  version: "2.2.0",
-  releaseDate: "2026-11-11",
+  version: "2.2.1",
+  releaseDate: "2026-11-12",
   fileSize: "약 19MB",
   requirements: "Windows 10 / 11 (64비트) · 인터넷 연결",
 
   // 설치 파일: Supabase → Storage → 'releases' 버킷(비공개)에 올린 파일 이름 (배포가이드.md 4단계)
   //  승인된 회원이 로그인해야만 60초짜리 임시 링크로 내려받을 수 있습니다. (GitHub Releases 공개 링크는 쓰지 않습니다)
   storageBucket: "releases",
-  downloadFile: "StockPicker-Setup-2.2.0.exe",
+  downloadFile: "StockPicker-Setup-2.2.1.exe",
 
   // 로그인 · 회원 가입 · 인증키 요청서 (공개용 publishable 키 — 사이트에 넣어도 안전합니다. secret 키는 절대 금지)
   supabaseUrl: "https://pkroaimoxdeedxajewtr.supabase.co",
@@ -32,6 +32,8 @@ window.SP_CONFIG = {
 
   // 공지 · 변경 내역 (최신이 위)
   notices: [
+    { date: "2026-11-12", type: "업데이트", title: "Stock Picker 2.2.1 — 용어 설명 · 표 가로 스크롤",
+      body: "상세 화면에서 ⓘ 표시가 붙은 항목(손절 참고가, PER/PBR, RSI, 괴리율 등)과 시장 현황 카드, 옵션 만기일 같은 일정에 마우스를 올리면 뜻과 계산 방법이 나옵니다. '그 외 분석 종목' 표의 주요 사항이 잘리지 않도록 가로 스크롤을 넣었고, 일부 PC에서 '인증 서버에 연결할 수 없습니다(인증서 오류)'가 나던 문제를 고쳤습니다. 프로그램 실행 시 업데이트 안내가 나옵니다." },
     { date: "2026-11-11", type: "업데이트", title: "Stock Picker 2.2.0 — ETF 분석 추가",
       body: "국내 상장 ETF를 대분류(국내주식·해외주식·채권·원자재 등)·중분류(반도체·미국 기술·국채 등)·배율(1배·레버리지·인버스)로 나누어 추천 TOP 5를 보여 드립니다. 상세 화면에서 구성 종목 블록 그림, 기간 수익률, 총보수·괴리율, 같은 지수 다른 상품 비교를 확인할 수 있습니다. 2.1.0 사용자는 프로그램 실행 시 업데이트 안내가 나옵니다." },
     { date: "2026-11-11", type: "업데이트", title: "Stock Picker 2.1.0 — 인증키 한 번 등록 · 자동 업데이트 · 의견 보내기",
