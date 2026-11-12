@@ -1,10 +1,10 @@
 {
-  "version": "2.2.1",
+  "version": "2.2.2",
   "date": "2026-11-12",
-  "file": "StockPicker-Setup-2.2.1.exe",
-  "size": 18820647,
-  "sha256": "f6b22e58198261a5ab76c417c225dd14d6b28f7678b9f8541c35be0af384ddaf",
+  "file": "StockPicker-Setup-2.2.2.exe",
+  "size": 18821419,
+  "sha256": "3fbdfe6188dc019e618bea96f1cf283b9199b0bb338967f7dbeffe30ebdd2b77",
   "bucket": "releases",
   "minVersion": "",
-  "notes": "- 상세 화면의 ⓘ 표시 항목(손절·목표 참고가, RSI, 일평균 변동폭, 시가총액, PER/PBR, 팩터 점수, ETF 괴리율·총보수 등)에\n  마우스를 올리면 뜻과 계산 방법·점수 기준을 풍선 도움말로 표시\n- 시장 현황 카드(KOSPI · KOSDAQ · 그룹 강도 · 해외 지수 · 환율)와 일정 알림 띠(옵션 만기일 · 동시만기 · FOMC 등)에도 설명 표시\n- '그 외 분석 종목 · 제외 종목' 표의 주요 사항이 잘리던 문제 — 글자 길이만큼 열을 넓히고 가로 스크롤 막대 추가(Shift+휠로도 이동)\n- 백신·보안 프로그램이나 회사망이 HTTPS를 검사하는 PC에서 '인증 서버에 연결할 수 없습니다(CERTIFICATE_VERIFY_FAILED)'\n  오류가 나던 문제 수정 — Windows 인증서 저장소를 함께 사용"
+  "notes": "- 프로그램 안 [업데이트]로 설치한 뒤 새 버전이 자동 실행될 때 'Failed to load Python DLL ... _MEIxxxx\\python3xx.dll'\n  오류 창이 뜨던 문제 수정 — 설치 프로그램이 옛 버전의 임시 폴더 정보를 물려받지 않도록 실행 환경을 초기화\n  (설치 자체는 정상 완료되던 문제로, 오류 창이 떴다면 바탕화면 · 시작 메뉴에서 다시 실행하면 됨)"
 }
