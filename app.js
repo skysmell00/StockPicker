@@ -50,7 +50,7 @@
   }
 
   const APPROVAL = { pending: ["승인 대기", "wait"], approved: ["승인 완료", "ok"], rejected: ["승인 거절", "bad"] };
-  const ROLE = { general: "일반 회원", premium: "프리미엄 회원", monitor: "모니터 회원" };
+  const ROLE = { general: "일반 회원", premium: "프리미엄 회원", monitor: "모니터 회원", admin: "관리자 (모든 기능)" };
   let me = null;           // my_member() 결과
   let recovering = false;  // 비밀번호 재설정 링크로 들어옴
 
@@ -87,7 +87,7 @@
     const pill = $("me-approval"); pill.textContent = ap[0]; pill.className = "pill " + ap[1];
     const approved = me.approval === "approved" && me.status === "active";
     $("me-role").textContent = approved ? (ROLE[me.role] || "-") : "-";
-    $("me-period").textContent = !approved ? "-" : me.role === "monitor" ? "기간 제한 없음"
+    $("me-period").textContent = !approved ? "-" : (me.role === "monitor" || me.is_admin) ? "기간 제한 없음"
                                : me.subscription_end ? `${me.subscription_end} 까지` : "-";
     $("me-note").textContent = me.approval === "pending" ? "가입 신청이 접수되었습니다. 운영자가 확인 후 승인하면 설치 파일 다운로드와 인증키 요청서 제출이 가능합니다."
       : me.approval === "rejected" ? "가입이 승인되지 않았습니다. 궁금한 점은 " + (C.contact || "개발자") + " 로 문의하세요." : "";
@@ -95,7 +95,10 @@
     // 인증키 안내 상태
     const gs = $("guide-state");
     let g = "";
-    if (!approved) g = "회원 가입이 승인되면 설치 파일을 받고 인증키를 신청할 수 있습니다.";
+    if (me.is_admin) {
+      $("me-note").innerHTML = '관리자 계정입니다. <a href="admin.html">관리자 페이지 열기 →</a>';
+      g = "🛡 관리자 계정은 인증키가 필요 없습니다. Stock Picker에서 이 이메일(또는 아이디 admin)로 로그인하면 바로 사용할 수 있습니다.";
+    } else if (!approved) g = "회원 가입이 승인되면 설치 파일을 받고 인증키를 신청할 수 있습니다.";
     else if (me.request_status === "pending") g = "⏳ 인증키 신청을 확인하고 있습니다. 부여되면 가입 이메일로 보내 드립니다.";
     else if (me.has_key && me.role !== "general") g = "✔ 인증키가 발급되어 있습니다. 가입 이메일로 받은 인증키로 로그인하세요.";
     else if (me.has_key) g = "사용 기간이 끝났습니다. 프로그램 로그인 창의 [인증키 신청]으로 연장을 신청하세요.";
