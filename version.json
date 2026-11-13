@@ -1,10 +1,10 @@
 {
-  "version": "2.2.2",
-  "date": "2026-11-12",
-  "file": "StockPicker-Setup-2.2.2.exe",
-  "size": 18821419,
-  "sha256": "3fbdfe6188dc019e618bea96f1cf283b9199b0bb338967f7dbeffe30ebdd2b77",
+  "version": "2.3.0",
+  "date": "2026-11-13",
+  "file": "StockPicker-Setup-2.3.0.exe",
+  "size": 18822234,
+  "sha256": "d0db224e298caec2e557f934b66cfa2995ead3a63bea8f0e8805f6b51cd1e347",
   "bucket": "releases",
   "minVersion": "",
-  "notes": "- 프로그램 안 [업데이트]로 설치한 뒤 새 버전이 자동 실행될 때 'Failed to load Python DLL ... _MEIxxxx\\python3xx.dll'\n  오류 창이 뜨던 문제 수정 — 설치 프로그램이 옛 버전의 임시 폴더 정보를 물려받지 않도록 실행 환경을 초기화\n  (설치 자체는 정상 완료되던 문제로, 오류 창이 떴다면 바탕화면 · 시작 메뉴에서 다시 실행하면 됨)"
+  "notes": "- 로그인 창 아이디에 admin 을 넣으면 관리자로 로그인 (비밀번호는 Stock Picker Controller에서 설정)\n  - 회원 승인 · 인증키 · 약관 동의 · 1키 1PC(동시 사용 정지) 기준을 적용하지 않음 → 어느 PC에서든 동시에 사용\n  - 상단에 '🛡 관리자 모드' 표시, 설치 파일(업데이트) 내려받기 가능\n- 서버 SQL(supabase_setup.sql) 최신본을 먼저 실행해야 동작"
 }
