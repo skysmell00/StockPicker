@@ -12,6 +12,7 @@
                                    { auth: { persistSession: true, autoRefreshToken: true, storageKey: "sp-admin-auth" } })
     : null;
   const SITE = new URL("./", location.href).href;
+  let BRIEF = "";          // 테마 브리핑 주소 (Controller에서 저장 → admin_settings.briefing_url)
   const DEV = C.developer || "Jongse Kim";
   const CONTACT = C.contact || "";
   let DATA = null;
@@ -58,8 +59,20 @@
       `1. 사이트(${SITE})에 로그인해 설치 파일을 내려받아 설치합니다.\n` +
       "2. Stock Picker를 실행하고 사이트 회원 이메일 · 비밀번호로 로그인합니다.\n" +
       "   로그인 후 열리는 [인증키 등록] 창의 [인증키 신청]을 누르고, 인증키 이용약관에 동의한 뒤 신청하세요.\n" +
-      "3. 관리자가 확인 후 이 이메일 주소로 인증키를 보내 드립니다.\n\n" +
+      "3. 관리자가 확인 후 이 이메일 주소로 인증키를 보내 드립니다.\n" +
+      briefingSection() + "\n" +
       `문의: ${DEV} (${CONTACT})`];
+  }
+  function briefingSection() {
+    return ["", "[회원 전용 웹앱 · 테마 브리핑]",
+      "관심 업종 · 테마를 고르면 AI 증시 전망, 기사 분위기, 주요 재료, 최신 기사를 한 화면에서 보여 주는 웹앱입니다.",
+      "PC 브라우저와 휴대폰(안드로이드 · 아이폰) 모두에서 쓸 수 있습니다.",
+      "  접속 주소 : " + (BRIEF || "운영자가 별도로 안내해 드립니다."),
+      "  로그인 : Stock Picker 사이트 회원 이메일 · 비밀번호",
+      "  이용 대상 : 프리미엄 · 모니터 회원 (인증키를 받으면 이용 가능)",
+      "  휴대폰에서 앱처럼 쓰기 : 안드로이드 크롬 메뉴(⋮) → [홈 화면에 추가],",
+      "                           아이폰 사파리 공유 버튼 → [홈 화면에 추가]",
+      "※ 접속 주소는 회원 전용입니다. 다른 사람과 공유하지 마세요.", ""].join("\n");
   }
   function keyMail(r, months) {
     const monitor = r.role === "monitor";
@@ -79,7 +92,7 @@
       "[유의 사항]", "• 인증키 1개는 동시에 1대의 PC에서만 사용할 수 있습니다.",
       "  같은 인증키가 2대 이상의 PC에서 동시에 실행되면 즉시 사용이 정지됩니다.",
       "• 프로그램과 인증키를 다른 사람에게 공유·양도하거나 무단으로 복제·배포하는 것을 금지합니다.",
-      "• 인터넷에 연결된 상태에서만 사용할 수 있습니다.", "", `문의: ${DEV} (${CONTACT})`].join("\n")];
+      "• 인터넷에 연결된 상태에서만 사용할 수 있습니다.", briefingSection(), `문의: ${DEV} (${CONTACT})`].join("\n")];
   }
   function replyMail(f) {
     const quote = String(f.message || "").split("\n").slice(0, 20).map((l) => "> " + l).join("\n");
@@ -242,6 +255,7 @@
         ${f.status !== "done" ? `<button class="btn ghost small" data-act="fbdone" data-id="${f.id}">✔ 처리 완료</button>` : ""}
       </div>`).join("") : '<div class="empty">받은 의견이 없습니다.</div>';
 
+    BRIEF = (d.settings || {}).briefing_url || "";
     $("set-topic").value = (d.settings || {}).ntfy_topic || "";
     $("set-email").value = (d.settings || {}).notify_email || "";
   }
