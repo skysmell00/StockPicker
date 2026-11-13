@@ -2,15 +2,15 @@
    Stock Picker 배포 사이트 설정 — 새 버전을 낼 때 여기만 고치면 됩니다.
    ================================================================ */
 window.SP_CONFIG = {
-  version: "2.3.0",
-  releaseDate: "2026-11-13",
+  version: "2.4.0",
+  releaseDate: "2026-11-14",
   fileSize: "약 19MB",
   requirements: "Windows 10 / 11 (64비트) · 인터넷 연결",
 
   // 설치 파일: Supabase → Storage → 'releases' 버킷(비공개)에 올린 파일 이름 (배포가이드.md 4단계)
   //  승인된 회원이 로그인해야만 60초짜리 임시 링크로 내려받을 수 있습니다. (GitHub Releases 공개 링크는 쓰지 않습니다)
   storageBucket: "releases",
-  downloadFile: "StockPicker-Setup-2.3.0.exe",
+  downloadFile: "StockPicker-Setup-2.4.0.exe",
 
   // 로그인 · 회원 가입 · 인증키 요청서 (공개용 publishable 키 — 사이트에 넣어도 안전합니다. secret 키는 절대 금지)
   supabaseUrl: "https://pkroaimoxdeedxajewtr.supabase.co",
@@ -32,6 +32,8 @@ window.SP_CONFIG = {
 
   // 공지 · 변경 내역 (최신이 위)
   notices: [
+    { date: "2026-11-14", type: "업데이트", title: "Stock Picker 2.4.0 — 기업 개요 · 재료 · 수급 체크",
+      body: "종목명 옆 [기업 정보]에 마우스를 올리면 어떤 사업을 하는 회사인지와 시가총액 · PER · PBR 등을 한눈에 볼 수 있고, 새 '재료 · 수급 체크' 칸에서 오늘 왜 움직였는지 단서(거래량 · 외국인/기관 수급 · 테마 편입 사유 · 기사 재료 · 최근 공시)를 보여 줍니다. 급등 종목은 목록에 🔥로 표시하고, 점수에서 빠진 종목도 재료 정보를 볼 수 있습니다. '그 외 분석 종목' 표의 종목명이 잘리던 문제도 고쳤습니다." },
     { date: "2026-11-12", type: "수정", title: "Stock Picker 2.2.2 — 업데이트 후 실행 오류 수정",
       body: "프로그램 안에서 업데이트한 뒤 'Failed to load Python DLL' 오류 창이 뜨는 경우가 있었습니다. 설치는 정상적으로 끝난 것이니 확인을 누르고 바탕화면이나 시작 메뉴에서 Stock Picker를 다시 실행해 주세요. 2.2.2부터는 이 오류가 나지 않습니다." },
     { date: "2026-11-12", type: "업데이트", title: "Stock Picker 2.2.1 — 용어 설명 · 표 가로 스크롤",
